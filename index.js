@@ -3,6 +3,8 @@ const app = express();
 const bodyParser = require("body-parser");
 const env = require("dotenv");
 const mongoose = require("mongoose");
+const movie = require("./models/movie.model");
+const routes = require("./routes/index");
 
 env.config();
 
@@ -16,13 +18,25 @@ app.get("/home", (req, res) => {
   });
 });
 
+// api routes 
+app.use("/mba",routes);
+
 app.listen(process.env.PORT, async () => {
   console.log(`server started on port ${process.env.PORT}!!`);
-  try{
-  await mongoose.connect(process.env.DB_URL); // connect to the  mongo server
-  console.log("successfully connected mongodb");
-  }
-  catch(err){
+  try {
+    await mongoose.connect(process.env.DB_URL); // connect to the  mongo server
+    console.log("successfully connected mongodb");
+    // await movie.create({
+    //   name: "Bacchan Pandey",
+    //   description: "comedy kabdi series ",
+    //   casts: ["amrit", "thapa", "kc", "rai"],
+    //   director: "rambabu rai",
+    //   trailerUrl: "http://bacchanpandey/trailer/1",
+    //   langauage: "Hindi",
+    //   releaseDate: "18-03-2022",
+    //   relaseStatus: "RELEASED",
+    // });
+  } catch (err) {
     console.log("not able to  connect mongo", err);
   }
 });
