@@ -11,12 +11,14 @@ env.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// app.get("/home/:id", (req, res) => {
+//   console.log(req.body,req.query,req.params);
 app.get("/home", (req, res) => {
   return res.status(200).json({
     success: true,
     message: " welcome to the movie booking system develoed by amrit",
   });
-});
+}); 
 
 // api routes 
 app.use("/mba",routes);
