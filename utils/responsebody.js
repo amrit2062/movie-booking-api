@@ -10,7 +10,7 @@ const successResponseBody = {
   err: {},
   data: {},
   message: "Sucessfully process the request",
-  success: false,
+  success: true,
 };
 
 module.exports = {
