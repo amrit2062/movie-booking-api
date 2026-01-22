@@ -14,7 +14,7 @@ exports.createMovie = async (req, res) => {
         (errorResponseBody.err = response.code),
         (errorResponseBody.message =
           "validation failed on few parameters of the request body "));
-          
+
       return res.status(response.code).json(errorResponseBody);
     }
     successResponseBody.data = response;
@@ -61,20 +61,36 @@ exports.getMovie = async (req, res) => {
   }
 };
 
-exports.updateMovie = async(req,res)=>{
-  try{
+exports.updateMovie = async (req, res) => {
+  try {
     const response = await movieService.updateMovie(req.params.id, req.body);
-    if(response.err){
+    if (response.err) {
       errorResponseBody.err = response.err;
-      errorResponseBody.message ="the update that  we are trying to apply does not validated the schema ";
-      return res.status(response.code).json({errorResponseBody});
+      errorResponseBody.message =
+        "the update that  we are trying to apply does not validated the schema ";
+      return res.status(response.code).json({ errorResponseBody });
     }
     successResponseBody.data = response;
-    return res.status(200).json({successResponseBody});
-
-  }catch(err){
+    return res.status(200).json({ successResponseBody });
+  } catch (err) {
     console.log(err);
     errorResponseBody.err = err;
-    res.status(500).json({errorResponseBody});
+    res.status(500).json({ errorResponseBody });
   }
-}
+};
+
+exports.getMovies = async (req, res) => {
+  try {
+    const response = await movieService.fetchMovies(req.query);
+    if (response.error) {
+      errorResponseBody.err = response.err;
+      return res.status(response.code).json(errorResponseBody);
+    }
+    successResponseBody.data = response;
+    return res.status(200).json(successResponseBody);
+  } catch (error) {
+    console.log(error);
+    errorResponseBody.err = error;
+    return res.status(500).json(errorResponseBody);
+  }
+};

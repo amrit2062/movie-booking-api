@@ -5,6 +5,7 @@ const {createMovie,
   deleteMovie, 
   getMovie,
   updateMovie,
+  getMovies,
 } = require("../controllers/movie.controller");
 
 const express = require("express");
@@ -17,6 +18,7 @@ router.get("/v1/movies/:id", getMovie);
 router.put("/v1/movies/:id",updateMovie);
 router.patch("//v1/movies/:id",updateMovie);
 
+router.get("/v1/movies",getMovies);
 
 
 
