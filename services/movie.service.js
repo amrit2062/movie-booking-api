@@ -1,11 +1,12 @@
 const Movie = require("../models/movie.model");
+const { ErrorType } = require("../utils/enums");
 
 const createMovie = async (data) => {
   try {
     const movie = await Movie.create(data);
     return movie;
   } catch (error) {
-    if (error.name === "ValidationError") {
+    if (error.name === ErrorType.Validation) {
       let err = {};
       Object.keys(error.errors).forEach((key) => {
         err[key] = error.errors[key].message;
@@ -52,7 +53,7 @@ const updateMovie = async(id,data)=>{
   }
   catch(error){
     
-    if (error.name === "ValidationError") {
+    if (error.name === ErrorType.Validation) {
       let err = {};
       Object.keys(error.errors).forEach((key) => {
         err[key] = error.errors[key].message;
