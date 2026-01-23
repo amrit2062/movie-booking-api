@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-// const MovieMiddlewares = require("../middlewares/movie.middleware");
-
 
 const movieRoutes = require("./movie.route");
+const theatreRoutes = require("./theatre.route");
 
 
 
 router.use("/api", movieRoutes);
+router.use("/api",theatreRoutes)
 
 
 
