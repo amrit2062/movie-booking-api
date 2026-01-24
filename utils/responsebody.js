@@ -1,4 +1,3 @@
-
 const errorResponseBody = {
   err: {},
   data: {},
@@ -7,13 +6,12 @@ const errorResponseBody = {
 };
 
 const successResponseBody = {
-  err: {},
-  data: {},
-  message: "Sucessfully process the request",
   success: true,
+  message: "Sucessfully process the request",
+  data: {},
 };
 
 module.exports = {
-    errorResponseBody,
-    successResponseBody
-}
+  errorResponseBody,
+  successResponseBody,
+};

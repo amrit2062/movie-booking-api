@@ -1,3 +1,4 @@
+const { response } = require("express");
 const theatreService = require("../services/theatre.service");
 const {
   errorResponseBody,
@@ -8,7 +9,7 @@ exports.create = async (req, res) => {
   try {
     const response = await theatreService.createTheatre(req.body);
     //console.log("hamro response -========", response)
-       if (response.err) {
+    if (response.err) {
       errorResponseBody.err = response.err;
       errorResponseBody.message =
         "Validation failed on few parameters of the request body  ";
@@ -18,6 +19,55 @@ exports.create = async (req, res) => {
     //console.log(successResponseBody.data);
     successResponseBody.message = "successfully created the theatre";
     return res.status(201).json(successResponseBody);
+  } catch (error) {
+    errorResponseBody.err = error;
+    return res.status(500).json(errorResponseBody);
+  }
+};
+
+exports.destory = async (req, res) => {
+  try {
+    const response = await theatreService.deleteTheathre(req.params.id);
+    if (response.err) {
+      errorResponseBody.err = response.err;
+      return res.status(response.code).json(errorResponseBody);
+    }
+    successResponseBody.data = response;
+    successResponseBody.message = " successfully deleted the given theatre";
+    return res.status(200).json(successResponseBody);
+  } catch (error) {
+    errorResponseBody.err = error;
+    return res.status(500).json(errorResponseBody);
+  }
+};
+exports.getTheatre = async (req, res) => {
+  try {
+    const response = await theatreService.getTheatre(req.params.id);
+    if (response.err) {
+      errorResponseBody.err = response.err;
+      return res.status(response.code).json(errorResponseBody);
+    }
+    if (response.status == "404") {
+      response.err;
+    }
+
+    successResponseBody.data = response;
+    successResponseBody.message =
+      "Successfully fetched the data of the theatre";
+    return res.status(200).json(successResponseBody);
+  } catch (error) {
+    errorResponseBody.err = error;
+
+    return res.status(500).json(errorResponseBody);
+  }
+};
+
+exports.getTheatres = async (req, res) => {
+  try {
+    const response = await theatreService.getAllTheatres();
+    successResponseBody.data = response;
+    successResponseBody.message = "Successfully fetched  all theatres";
+    return res.status(200).json(successResponseBody);
   } catch (error) {
     errorResponseBody.err = error;
     return res.status(500).json(errorResponseBody);
