@@ -73,3 +73,21 @@ exports.getTheatres = async (req, res) => {
     return res.status(500).json(errorResponseBody);
   }
 };
+
+exports.updateTheatres = async (req, res) => {
+  try {
+    const response = await theatreService.updateTheatres(req.params.id, req.body);
+    if (response.err) {
+      errorResponseBody.err = response.err;
+      errorResponseBody.message =
+        "the update that  we are trying to apply does not validated the schema ";
+      return res.status(response.code).json({ errorResponseBody });
+    }
+    successResponseBody.data = response;
+    return res.status(200).json({ successResponseBody });
+  } catch (err) {
+    console.log(err);
+    errorResponseBody.err = err;
+    res.status(500).json({ errorResponseBody });
+  }
+};

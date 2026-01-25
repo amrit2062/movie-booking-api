@@ -5,6 +5,10 @@ const badRequestResponse = {
   message: "Malformed Request | bad request",
 };
 
+//  HTTP request object
+//HTTP response object
+// next middleware function
+// whether the request is valid or not
 const validatedMovieCreateRequest = async (req, res, next) => {
   // validate the movie name
   if (!req.body.name) {
@@ -28,13 +32,13 @@ const validatedMovieCreateRequest = async (req, res, next) => {
       "The casts of  the movie is not presert in  the request";
     return res.status(400).json(badRequestResponse);
   }
-  
+
   // validate director of the movie
   if (!req.body.director) {
     // if (!req.body.trailerUrl) {
-      badRequestResponse.err =
-        "The director of  movie is not present in the request";
-      return res.status(400).json({ badRequestResponse });
+    badRequestResponse.err =
+      "The director of  movie is not present in the request";
+    return res.status(400).json({ badRequestResponse });
     // }
   }
 

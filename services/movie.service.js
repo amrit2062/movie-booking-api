@@ -1,6 +1,8 @@
 const Movie = require("../models/movie.model");
 const { ErrorType } = require("../utils/enums");
 
+//  data objects contained details  of the new movie to the created
+//return the new movie objects is created  for this function 
 const createMovie = async (data) => {
   try {
     const movie = await Movie.create(data);
@@ -27,6 +29,9 @@ const createMovie = async (data) => {
 //     const movie = Movie.create(data);
 //     return movie;
 // }
+
+//id which will be used to identify  the movie id to be deleted 
+// its return to the object containning for the detailas of the  movie is deleted
 const deleteMovie = async (id) => {
   try {
     const response = await Movie.findByIdAndDelete(id);
@@ -42,7 +47,8 @@ const deleteMovie = async (id) => {
   }
   return response;
 };
-
+// id used to the identify which the movie  to be fetch 
+// its return containing object its movie is  fetched
 const getMovieById = async (id) => {
   const movie = await Movie.findById(id);
   console.log("movie found", movie);
@@ -56,6 +62,10 @@ const getMovieById = async (id) => {
   }
   return movie;
 };
+
+// id which will be to the identify to the movie will be updateded
+// data object that contaning  actual data which will be the updateded in data 
+// The functions is returns new updated movie details 
 
 const updateMovie = async (id, data) => {
   try {
@@ -77,7 +87,8 @@ const updateMovie = async (id, data) => {
     }
   }
 };
-
+//filter wil fetch us in filtering data based on the conditional
+//return with objects conataning  all the movie fetched based on the filter 
 const fetchMovies = async (filter) => {
   let query = {};
   if (filter.name) {

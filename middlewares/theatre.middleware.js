@@ -1,4 +1,9 @@
 const { errorResponseBody } = require("../utils/responsebody");
+
+//  HTTP request object
+//HTTP response object
+// next middleware function
+// whether the request is valid or not
 const validatedMovieCreateRequest = async (req, res, next) => {
   // valadation of name
   if (!req.body.name) {
