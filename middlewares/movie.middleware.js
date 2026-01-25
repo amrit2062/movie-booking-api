@@ -54,6 +54,7 @@ const validatedMovieCreateRequest = async (req, res, next) => {
       "The  movie relase date  is not present in the request";
     return res.status(400).json({ badRequestResponse });
   }
+  
 
   next();
 };

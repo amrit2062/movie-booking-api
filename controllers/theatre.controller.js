@@ -76,7 +76,10 @@ exports.getTheatres = async (req, res) => {
 
 exports.updateTheatres = async (req, res) => {
   try {
-    const response = await theatreService.updateTheatres(req.params.id, req.body);
+    const response = await theatreService.updateTheatres(
+      req.params.id,
+      req.body,
+    );
     if (response.err) {
       errorResponseBody.err = response.err;
       errorResponseBody.message =
@@ -89,5 +92,29 @@ exports.updateTheatres = async (req, res) => {
     console.log(err);
     errorResponseBody.err = err;
     res.status(500).json({ errorResponseBody });
+  }
+};
+// theatre id :unique id of theatre for which we want to update movies
+// moviesIds : array of movie ids are expected to be updated in theatre
+//insert: boolean that tells wheather we want insert movies or remove them
+// returns:  updated theatre objects
+exports.updateMovies = async (req, res) => {
+  try {
+    const response = await theatreService.updateMovieTheatres(
+      req.params.id,
+      req.body.movieIds,
+      req.body.insert,
+    );
+    if (response.err) {
+      errorResponseBody.err = response.err;
+      return res.status(response.code).json(errorResponseBody);
+    }
+    successResponseBody.data = response;
+    successResponseBody.message = " successfully updated movies in the theatre";
+    return res.status(200).json(successResponseBody);
+  } catch (error) {
+    console.log(error);
+    errorResponseBody.err = error;
+    return res.status(500).json(errorResponseBody);
   }
 };

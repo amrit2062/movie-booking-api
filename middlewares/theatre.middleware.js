@@ -24,4 +24,31 @@ const validatedMovieCreateRequest = async (req, res, next) => {
   }
   next(); // everything is fine to the next middleware
 };
-module.exports = { validatedMovieCreateRequest };
+const validateUpdateMoviesRequest = async (req, res, next) => {
+  //validation of insert parameter
+  if (req.body.insert == undefined) {
+    errorResponseBody.message =
+      "The insert parameter in missing in the request";
+    return res.status(400).json(errorResponseBody);
+  }
+  // validate movieIds presence
+  if (!req.body.movieIds) {
+    errorResponseBody.message =
+      " No movies present in the request to be updated in theatre";
+    return res.status(400).json(errorResponseBody);
+  } // validate if movieIds is an array or not
+  if (!(req.body.movieIds instanceof Array)) {
+    errorResponseBody.message =
+      "Expected array of movies but found something else ";
+    return res.status(400).json(errorResponseBody);
+  }
+  //validate if movieids is empty or not
+  if (req.body.movieIds.length == 0) {
+    errorResponseBody.message = "No movies present in the array provided";
+    return res.status(400).json(errorResponseBody);
+  }
+  // everything is fine
+  next();
+};
+
+module.exports = { validatedMovieCreateRequest,validateUpdateMoviesRequest};

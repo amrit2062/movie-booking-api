@@ -41,9 +41,10 @@ const movieSchema = new mongoose.Schema(
       required: true,
       default: "RELEASED",
     },
+   
   },
   { timestamps: true },
 );
 
-const Movie = mongoose.model("movie", movieSchema); // create a new model
+const Movie = mongoose.model("Movie", movieSchema); // create a new model
 module.exports = Movie; // returing the model

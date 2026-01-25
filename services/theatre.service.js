@@ -87,7 +87,7 @@ const updateTheatres = async (id, data) => {
         code: 404,
       };
     }
-    return response
+    return response;
   } catch (error) {
     if (error.name === ErrorType.Validation) {
       let err = {};
@@ -99,6 +99,36 @@ const updateTheatres = async (id, data) => {
     throw error;
   }
 };
+const updateMovieTheatres = async (theatreId, moviesIds, insert) => {
+  const theatre = await Theatre.findById(theatreId);
+  if (!theatre) {
+    return {
+      err: "No such theatre found for the id provided",
+      code: 404,
+    };
+  }
+  if (insert) {
+    // we need to add movies
+    moviesIds.forEach((movieId) => {
+      theatre.movies.push(movieId);
+    });
+  } else {
+    // we need to  remove movies
+    let savedMoviesIds = theatre.movies;
+    moviesIds.forEach(movieId => {
+      savedMovieIds = savedMoviesIds.filter(smi => smi == movieId);
+    });
+    theatre.movies = savedMoviesIds;
+  }
+  await theatre.save();
+  return theatre.populate('movies');
+};
 
-
-module.exports = { createTheatre, deleteTheathre, getTheatre, getAllTheatres,updateTheatres};
+module.exports = {
+  createTheatre,
+  deleteTheathre,
+  getTheatre,
+  getAllTheatres,
+  updateTheatres,
+  updateMovieTheatres,
+};
