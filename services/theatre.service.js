@@ -1,3 +1,4 @@
+const { Query } = require("mongoose");
 const Theatre = require("../models/theater.model");
 const { ErrorType } = require("../utils/enums");
 // data objects conataiming details of the theatre to be created
@@ -61,9 +62,41 @@ const getTheatre = async (id) => {
 
 // the data to be used to filter out  theatres based on city/pincode
 // returns an object with the filtered content of theatre
-const getAllTheatres = async () => {
+const getAllTheatres = async (data) => {
   try {
-    const response = await Theatre.find({});
+    // const response = await Theatre.find({});
+    // return response;
+    let query = {};
+    let  pagination = {};
+
+    if (data && data.city) {
+      // This checks whather city is present in query params or not
+      query.city = data.city;
+    }
+    if (data && data.pincode) {
+      // This checks whather pincode is present in query params or not
+      query.pincode = data.pincode;
+    }
+
+    if (data && data.name) {
+      // this checks whather name is present  is query params or not
+      query.name = data.name;
+    }
+    // console.log(query);
+    // if(data && data.search){
+    //   query.search = data.search 
+
+    // }
+    if(data&& data.limit){
+      pagination.limit = data.limit ;
+    }
+ if(data&& data.skip){
+  //  for first page we skip as 0
+  let perPage = (data.limit) ? data.limit: 3;
+  pagination.skip =data.skip*perPage;
+ }
+    const response = await Theatre.find(query,{},pagination);
+    //console.log(response);
     return response;
   } catch (error) {
     console.log(error);
@@ -115,13 +148,13 @@ const updateMovieTheatres = async (theatreId, moviesIds, insert) => {
   } else {
     // we need to  remove movies
     let savedMoviesIds = theatre.movies;
-    moviesIds.forEach(movieId => {
-      savedMovieIds = savedMoviesIds.filter(smi => smi == movieId);
+    moviesIds.forEach((movieId) => {
+      savedMovieIds = savedMoviesIds.filter((smi) => smi == movieId);
     });
     theatre.movies = savedMoviesIds;
   }
   await theatre.save();
-  return theatre.populate('movies');
+  return theatre.populate("movies");
 };
 
 module.exports = {

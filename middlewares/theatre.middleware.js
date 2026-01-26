@@ -51,4 +51,4 @@ const validateUpdateMoviesRequest = async (req, res, next) => {
   next();
 };
 
-module.exports = { validatedMovieCreateRequest,validateUpdateMoviesRequest};
+module.exports = { validatedMovieCreateRequest, validateUpdateMoviesRequest };
