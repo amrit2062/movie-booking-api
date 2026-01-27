@@ -1,6 +1,10 @@
 const { Query } = require("mongoose");
 const Theatre = require("../models/theater.model");
 const { ErrorType } = require("../utils/enums");
+const {
+  errorResponseBody,
+  successResponseBody,
+} = require("../utils/responsebody");
 // data objects conataiming details of the theatre to be created
 // returns objects with new theatre details
 const createTheatre = async (data) => {
@@ -67,7 +71,7 @@ const getAllTheatres = async (data) => {
     // const response = await Theatre.find({});
     // return response;
     let query = {};
-    let  pagination = {};
+    let pagination = {};
 
     if (data && data.city) {
       // This checks whather city is present in query params or not
@@ -84,18 +88,18 @@ const getAllTheatres = async (data) => {
     }
     // console.log(query);
     // if(data && data.search){
-    //   query.search = data.search 
+    //   query.search = data.search
 
     // }
-    if(data&& data.limit){
-      pagination.limit = data.limit ;
+    if (data && data.limit) {
+      pagination.limit = data.limit;
     }
- if(data&& data.skip){
-  //  for first page we skip as 0
-  let perPage = (data.limit) ? data.limit: 3;
-  pagination.skip =data.skip*perPage;
- }
-    const response = await Theatre.find(query,{},pagination);
+    if (data && data.skip) {
+      //  for first page we skip as 0
+      let perPage = data.limit ? data.limit : 3;
+      pagination.skip = data.skip * perPage;
+    }
+    const response = await Theatre.find(query, {}, pagination);
     //console.log(response);
     return response;
   } catch (error) {
@@ -132,30 +136,74 @@ const updateTheatres = async (id, data) => {
     throw error;
   }
 };
-const updateMovieTheatres = async (theatreId, moviesIds, insert) => {
-  const theatre = await Theatre.findById(theatreId);
-  if (!theatre) {
-    return {
-      err: "No such theatre found for the id provided",
-      code: 404,
-    };
+const updateMovieTheatres = async (theatreId, movieIds, insert) => {
+  // const theatre = await Theatre.findById(theatreId);
+  // if (!theatre) {
+  //   return {
+  //     err: "No such theatre found for the id provided",
+  //     code: 404,
+  //   };
+  try {
+    if (insert) {
+      await Theatre.updateOne(
+        { _id: theatreId },
+        //{$push: {movies:{$each: movieIds}}}// push is like normal push of the arrays
+        { $addToSet: { movies: { $each: movieIds } } },
+      );
+    } else {
+      await Theatre.updateOne(
+        { _id: theatreId },
+        { $pull: { movies: { $in: movieIds } } },
+      );
+    }
+    const theatre = await Theatre.findById(theatreId);
+    return theatre.populate("movies");
+  } catch (error) {
+    if (error.name == "TypeError") {
+      return {
+        code: 404,
+        err: "No theatre found for the given id",
+      };
+    }
+    console.log("Error is ", error);
+    throw error;
   }
-  if (insert) {
-    // we need to add movies
-    moviesIds.forEach((movieId) => {
-      theatre.movies.push(movieId);
-    });
-  } else {
-    // we need to  remove movies
-    let savedMoviesIds = theatre.movies;
-    moviesIds.forEach((movieId) => {
-      savedMovieIds = savedMoviesIds.filter((smi) => smi == movieId);
-    });
-    theatre.movies = savedMoviesIds;
-  }
-  await theatre.save();
-  return theatre.populate("movies");
 };
+
+//if (insert) {
+// we need to add movies
+//let previousMovies = new Set(theatre.movies)
+//console.log(previousMovies);
+// moviesIds.forEach((movieId) => {
+//   if(previousMovies.has(movieId))
+//   theatre.movies.push(movieId);
+//});
+
+//await Theatre.updateOne(
+//{ _id: theatreId },
+//{$push: {movies:{$each: movieIds}}}// push is like normal push of the arrays
+// { $addToSet: { movies: { $each: movieIds } } },
+// );
+// await theatre.update({
+//   $push: { movies: { $each: moviesIds }}
+// });
+//  } else {
+// // we need to  remove movies
+// let savedMoviesIds = theatre.movies;
+// moviesIds.forEach((movieId) => {
+//   savedMovieIds = savedMoviesIds.filter((smi) => smi == movieId);
+// }) ;
+//   // theatre.movies = savedMoviesIds;
+//   await Theatre.updateOne(
+//     { _id: theatreId },
+//     { $pull: { movies: { $in: movieIds } } },
+//   );
+// }
+
+//   const theatres = await Theatre.findById(theatreId);
+//   // await theatre.save();
+//   return theatre.populate("movies");
+// };
 
 module.exports = {
   createTheatre,
