@@ -144,20 +144,23 @@ const updateMovieTheatres = async (theatreId, movieIds, insert) => {
   //     code: 404,
   //   };
   try {
+    let theatre ;
     if (insert) {
-      await Theatre.updateOne(
+        return await Theatre.findByIdAndUpdate(
         { _id: theatreId },
         //{$push: {movies:{$each: movieIds}}}// push is like normal push of the arrays
         { $addToSet: { movies: { $each: movieIds } } },
+        {new: true}
       );
     } else {
-      await Theatre.updateOne(
+       theatre = await Theatre.findByIdAndUpdate(
         { _id: theatreId },
-        { $pull: { movies: { $in: movieIds } } },
+        { $pull: { movies: { $in: movieIds } } }, 
+        {new: true}
       );
     }
-    const theatre = await Theatre.findById(theatreId);
-    return theatre.populate("movies");
+    //const theatre = await Theatre.findById(theatreId);
+    return  theatre.populate("movies");
   } catch (error) {
     if (error.name == "TypeError") {
       return {
