@@ -5,6 +5,7 @@ const {
   errorResponseBody,
   successResponseBody,
 } = require("../utils/responsebody");
+const Movie = require("../models/movie.model");
 // data objects conataiming details of the theatre to be created
 // returns objects with new theatre details
 const createTheatre = async (data) => {
@@ -91,6 +92,11 @@ const getAllTheatres = async (data) => {
     //   query.search = data.search
 
     // }
+    
+    if(data && data.movieId){
+      let movie = await Movie.findById(data.movieId); 
+      query.movies = {$all:movie};
+    }
     if (data && data.limit) {
       pagination.limit = data.limit;
     }
@@ -99,7 +105,7 @@ const getAllTheatres = async (data) => {
       let perPage = data.limit ? data.limit : 3;
       pagination.skip = data.skip * perPage;
     }
-    const response = await Theatre.find(query, {}, pagination);
+    const response = await Theatre.find(query, {}, pagination);// pincode:
     //console.log(response);
     return response;
   } catch (error) {
@@ -136,6 +142,12 @@ const updateTheatres = async (id, data) => {
     throw error;
   }
 };
+// theatreId => unique id of the thatre for which we want be the update  movies
+// movieIds=> array of the movie ids that are expected to be the updated theatre
+// insert=> boolean that tells wheather we want insert movies or remove thems
+// returns => updated theatre object
+
+
 const updateMovieTheatres = async (theatreId, movieIds, insert) => {
   // const theatre = await Theatre.findById(theatreId);
   // if (!theatre) {
@@ -144,23 +156,23 @@ const updateMovieTheatres = async (theatreId, movieIds, insert) => {
   //     code: 404,
   //   };
   try {
-    let theatre ;
+    let theatre;
     if (insert) {
-        return await Theatre.findByIdAndUpdate(
+      return await Theatre.findByIdAndUpdate(
         { _id: theatreId },
         //{$push: {movies:{$each: movieIds}}}// push is like normal push of the arrays
         { $addToSet: { movies: { $each: movieIds } } },
-        {new: true}
+        { new: true },
       );
     } else {
-       theatre = await Theatre.findByIdAndUpdate(
+      theatre = await Theatre.findByIdAndUpdate(
         { _id: theatreId },
-        { $pull: { movies: { $in: movieIds } } }, 
-        {new: true}
+        { $pull: { movies: { $in: movieIds } } },
+        { new: true },
       );
     }
     //const theatre = await Theatre.findById(theatreId);
-    return  theatre.populate("movies");
+    return theatre.populate("movies");
   } catch (error) {
     if (error.name == "TypeError") {
       return {

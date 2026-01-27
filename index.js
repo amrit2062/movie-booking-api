@@ -11,6 +11,9 @@ env.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+mongoose.set('debug', true);
+
+
 // app.get("/home/:id", (req, res) => {
 //   console.log(req.body,req.query,req.params);
 app.get("/home", (req, res) => {
