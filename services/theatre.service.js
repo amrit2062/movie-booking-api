@@ -92,10 +92,10 @@ const getAllTheatres = async (data) => {
     //   query.search = data.search
 
     // }
-    
-    if(data && data.movieId){
-      let movie = await Movie.findById(data.movieId); 
-      query.movies = {$all:movie};
+
+    if (data && data.movieId) {
+      let movie = await Movie.findById(data.movieId);
+      query.movies = { $all: movie };
     }
     if (data && data.limit) {
       pagination.limit = data.limit;
@@ -105,7 +105,7 @@ const getAllTheatres = async (data) => {
       let perPage = data.limit ? data.limit : 3;
       pagination.skip = data.skip * perPage;
     }
-    const response = await Theatre.find(query, {}, pagination);// pincode:
+    const response = await Theatre.find(query, {}, pagination); // pincode:
     //console.log(response);
     return response;
   } catch (error) {
@@ -146,7 +146,6 @@ const updateTheatres = async (id, data) => {
 // movieIds=> array of the movie ids that are expected to be the updated theatre
 // insert=> boolean that tells wheather we want insert movies or remove thems
 // returns => updated theatre object
-
 
 const updateMovieTheatres = async (theatreId, movieIds, insert) => {
   // const theatre = await Theatre.findById(theatreId);
@@ -220,6 +219,42 @@ const updateMovieTheatres = async (theatreId, movieIds, insert) => {
 //   return theatre.populate("movies");
 // };
 
+const getMoviesInTheatre = async (id) => {
+  try {
+    const theater = await Theatre.findById(id, {
+      name: 1,
+      movies: 1,
+      address: 1,
+    }).populate("movies");
+    if (!theater) {
+      return {
+        err: "No theater with the given id found",
+        code: 404,
+      };
+    }
+    return theater;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+const checkMovieInTheatre = async (theatreId, movieId) => {
+  try {
+    let response = await theater.findById(theatreId);
+    if (!response) {
+      return {
+        err: "No such theatre  found for the given id",
+        code: 404,
+      };
+    }
+
+    return response.movies.indexOf(movieId);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 module.exports = {
   createTheatre,
   deleteTheathre,
@@ -227,4 +262,6 @@ module.exports = {
   getAllTheatres,
   updateTheatres,
   updateMovieTheatres,
+  getMoviesInTheatre,
+  checkMovieInTheatre,
 };
