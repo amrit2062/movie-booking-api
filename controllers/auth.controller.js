@@ -12,7 +12,14 @@ exports.signup = async (req, res) => {
     successResponseBody.message = " successfully registered  a user";
     return res.status(201).json(successResponseBody);
   } catch (error) {
+    console.log(error);
     errorResponseBody.err = error;
+    if(error.err){
+      errorResponseBody.err = error.err;
+      return res.status(error.code).json(errorResponseBody);
+
+    }
+    errorResponseBody.err = error ;  
     return res.status(500).json(errorResponseBody);
   }
 };
