@@ -1,5 +1,5 @@
 const User = require("../models/user.model");
-const{USER_STATUS,USER_ROLE} = require("../utils/constants")
+const { USER_STATUS, USER_ROLE } = require("../utils/constants");
 
 exports.createUser = async (data) => {
   try {
@@ -30,3 +30,4 @@ exports.createUser = async (data) => {
     throw error;
   }
 };
+
