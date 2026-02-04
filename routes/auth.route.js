@@ -1,9 +1,9 @@
 const express = require("express");
-const { signup } = require("../controllers/auth.controller");
+const { signup,signin } = require("../controllers/auth.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 const router = express.Router(); // routes function takes express app objext as parameter
 
 router.post("/v1/auth/signup", authMiddleware.validateSignupRequest, signup);
-router.post("/v1/auth/sigin",signin)
+router.post("/v1/auth/signin",signin)
 
 module.exports = router;

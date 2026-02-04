@@ -9,7 +9,7 @@ const authRoutes = require("./auth.route");
 
 router.use("/api", movieRoutes);
 router.use("/api",theatreRoutes);
-router.use("/api",authRoutes)
+router.use("/api",authRoutes);
 
 
 

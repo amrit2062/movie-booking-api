@@ -59,19 +59,29 @@ const userSchema = new mongoose.Schema(
 );
 userSchema.pre("save", async function () {
   // a  trigger to encrypt the  plain password before saving the user
+  // prevent re-hashing on every save
   if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);
+  //const hash = await bcrypt.hash(this.password,10);
+  // this.password = hash ;
+  // next();
 });
 
 // This is going to be an instance method for user ,to compare a password with the
 // stored encrypted password
 // plainPassword : input password given by user in sign in request boolean denoting
 //whether passwords are same or not ?
-userSchema.methods.isValidPassword = async (plainPassword) => {
-  const currentUser = this;
-  const compare = await bcrypt.compare(plainPassword, currentUser.password);
-  return compare;
+
+// fixed instance method
+userSchema.methods.isValidPassword = async function (plainPassword) {
+  return await bcrypt.compare(plainPassword, this.password);
+
+  // const currentUser= this;
+  // console.log(plainPassword,currentUser.password);
+  // const compare = await bcrypt.compare(plainPassword,currentUser.password,this);
+
+  // return compare;
 };
 
 const User = mongoose.model("User", userSchema);
