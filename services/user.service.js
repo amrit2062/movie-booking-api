@@ -20,7 +20,7 @@ exports.createUser = async (data) => {
     return response;
   } catch (error) {
     //console.log(error);
-    if (error.name === "validatorError") {
+    if (error.name === "ValidationError") {
       let err = {};
       Object.keys(error.errors).forEach((key) => {
         err[key] = error.errors[key].message;
@@ -33,7 +33,7 @@ exports.createUser = async (data) => {
 exports.getUserByEmail = async (email) => {
   try {
     const response = await User.findOne({
-      email: email,
+      email: email
     });
     if (!response) {
       throw { err: "No user found for the  given email", code: 404 };
@@ -43,5 +43,20 @@ exports.getUserByEmail = async (email) => {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+};
+
+exports.getUserById = async (id)=>{
+  try{
+     const user =  await User.findById(id);
+     if(!User){
+      throw {err:"No user  found for the given id", code: 404};
+     } 
+      return user ;
+
+  }
+  catch(error){
+    console.log(error);
+    throw error; 
   }
 };

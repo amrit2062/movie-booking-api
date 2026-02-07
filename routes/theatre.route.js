@@ -1,4 +1,5 @@
 const theatreMiddleware = require("../middlewares/theatre.middleware");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const {
   create,
@@ -21,7 +22,7 @@ router.post(
   theatreMiddleware.validatedMovieCreateRequest,
 ); // create
 router.get("/v1/theatres/:id", validator.getTheatreValidators, getTheatre); // read
-router.delete("/v1/theatres/:id", destory); //delete
+router.delete("/v1/theatres/:id",authMiddleware.isAuthenticated,destory); //delete
 router.get("/v1/theatres", getTheatres);
 router.patch("/v1/theatres/:id", updateTheatres); // updated
 router.put("/v1/theatres/:id", updateTheatres);

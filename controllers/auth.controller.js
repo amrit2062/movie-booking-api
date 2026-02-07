@@ -12,9 +12,9 @@ exports.signup = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.AUTH_KEY,
-      {expiresIn:'1h'}
+      { expiresIn: "1h" },
     );
-    console.log(jwt.verify(token,process.env.AUTH_KEY));
+    console.log(jwt.verify(token, process.env.AUTH_KEY));
 
     successResponseBody.data = response;
     successResponseBody.token = token;
@@ -47,9 +47,9 @@ exports.signin = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.AUTH_KEY,
-      {expiresIn:'1h'}
+      { expiresIn: "1h" },
     );
-   // console.log(jwt.verify(token, process.env.AUTH_KEY));
+    // console.log(jwt.verify(token, process.env.AUTH_KEY));
 
     successResponseBody.message = "Successfully logged in";
     successResponseBody.data = {
@@ -67,6 +67,51 @@ exports.signin = async (req, res) => {
     }
 
     console.log(error);
+    errorResponseBody.err = "Internal server error";
+    return res.status(500).json(errorResponseBody);
+  }
+};
+exports.resetPassword = async (req, res) => {
+  try {
+    // 🔐 Ensure middleware actually set this
+    if (!req.userId) {
+      throw { err: "Unauthorized access", code: 401 };
+    }
+
+    const user = await userService.getUserById(req.userId);
+
+    // ✅ correct body field name
+    const isOldPasswordCorrect = await user.isValidPassword(
+      req.body.oldPassword
+    );
+
+    if (!isOldPasswordCorrect) {
+      throw {
+        err: "Invalid old password, please enter the correct password",
+        code: 403
+      };
+    }
+
+    // update DOCUMENT, not MODEL
+    user.password = req.body.newPassword;
+    await user.save(); // pre-save hook hashes password
+
+    successResponseBody.message =
+      "Successfully updated the password for the given user";
+    successResponseBody.data = {
+      email: user.email,
+      message: "Password updated successfully"
+    };
+
+    return res.status(200).json(successResponseBody);
+
+  } catch (error) {
+    if (error.err) {
+      errorResponseBody.err = error.err;
+      return res.status(error.code).json(errorResponseBody);
+    }
+
+    console.error(error);
     errorResponseBody.err = "Internal server error";
     return res.status(500).json(errorResponseBody);
   }
