@@ -33,7 +33,7 @@ exports.createUser = async (data) => {
 exports.getUserByEmail = async (email) => {
   try {
     const response = await User.findOne({
-      email: email
+      email: email,
     });
     if (!response) {
       throw { err: "No user found for the  given email", code: 404 };
@@ -46,17 +46,43 @@ exports.getUserByEmail = async (email) => {
   }
 };
 
-exports.getUserById = async (id)=>{
-  try{
-     const user =  await User.findById(id);
-     if(!User){
-      throw {err:"No user  found for the given id", code: 404};
-     } 
-      return user ;
-
-  }
-  catch(error){
+exports.getUserById = async (id) => {
+  try {
+    const user = await User.findById(id);
+    if (!User) {
+      throw { err: "No user  found for the given id", code: 404 };
+    }
+    return user;
+  } catch (error) {
     console.log(error);
-    throw error; 
+    throw error;
+  }
+};
+
+exports.updateUserRoleStatus = async (data, userId) => {
+  try {
+    let updateQuery = {};
+    if (data.userRole) updateQuery.userRole = data.userRole;
+    if (data.userStatus) updateQuery.userStatus = data.userStatus;
+    let response = await User.findOneAndUpdate(
+      {
+        _id: userId,
+      },
+      updateQuery,
+      { new: true, runValidators: true },
+    );
+    if (!response) throw { err: "No user found for the given id", code: 404 };
+    return response;
+  } catch (error) {
+    console.log(error, error.name);
+    if (error.name === "ValidationError") {
+      let err = {};
+      Object.keys(error.errors).forEach((key) => {
+        err[key] = error.errors[key].message;
+      });
+      throw { err: err, code: 400 };
+    }
+
+    throw error;
   }
 };

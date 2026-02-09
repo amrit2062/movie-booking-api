@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
         "Please fill a valid email address",
       ],
     },
-
+    
     password: {
       type: String,
       required: true,
@@ -54,7 +54,8 @@ const userSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // ✅ lowercase 'timestamps'
+    timestamps: true, //  correct plce lowercase 'timestamps'
+    autoIndex: false ,  // disables created index logs 
   },
 );
 userSchema.pre("save", async function () {

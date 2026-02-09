@@ -82,13 +82,13 @@ exports.resetPassword = async (req, res) => {
 
     // ✅ correct body field name
     const isOldPasswordCorrect = await user.isValidPassword(
-      req.body.oldPassword
+      req.body.oldPassword,
     );
 
     if (!isOldPasswordCorrect) {
       throw {
         err: "Invalid old password, please enter the correct password",
-        code: 403
+        code: 403,
       };
     }
 
@@ -100,11 +100,10 @@ exports.resetPassword = async (req, res) => {
       "Successfully updated the password for the given user";
     successResponseBody.data = {
       email: user.email,
-      message: "Password updated successfully"
+      message: "Password updated successfully",
     };
 
     return res.status(200).json(successResponseBody);
-
   } catch (error) {
     if (error.err) {
       errorResponseBody.err = error.err;
