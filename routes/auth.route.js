@@ -5,5 +5,5 @@ const router = express.Router(); // routes function takes express app objext as 
 
 router.post("/v1/auth/signup", authMiddleware.validateSignupRequest, signup);
 router.post("/v1/auth/signin",  authMiddleware.validateSigninRequest,signin)
-router.patch("/v1/auth/reset",authMiddleware.isAuthenticated,resetPassword);
+router.patch("/v1/auth/reset",authMiddleware.isAuthenticated,authMiddleware.valiadateResetPasswordRequest,resetPassword);
 module.exports = router;
